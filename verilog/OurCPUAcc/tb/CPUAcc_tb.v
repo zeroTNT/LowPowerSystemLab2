@@ -315,8 +315,8 @@ module CPUAcc_tb();
         //----- Load CPU Data Memory -----//
         // DMEM[0:80] = W
         // DMEM[81:728] = A
-        // DMEM[729:809] = C for W
-        // DMEM[810] = C for A
+        // DMEM[729:809] = Control for W
+        // DMEM[810] = Control for A
         for (global_daddr = 0; global_daddr < 81; global_daddr = global_daddr + 1) begin
             write_dmem(global_daddr, Acc_Wmem[global_daddr]);
         end
@@ -339,7 +339,6 @@ module CPUAcc_tb();
         LHI(3'd1, 8'b0000_0010);
         LLI(3'd2, 8'b0000_0000);// Load Immediate: LI R2, 0d(Weight address)
         LLI(3'd5, 8'b0101_0000);// Load Immediate: LI R5, 80d(Weight counter)
-        
         
         // Load weight loop body
         LDR(3'd3, 3'd1, 5'd0);  // Load Register: LDR R3, R1, 0d
@@ -465,11 +464,18 @@ module CPUAcc_tb();
         MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
         
         // Bubble for prediction
-        
-        LDR(3'd3, 3'd1, 5'd8);  // Load Register: LDR R3, R1, 8d
+        LLI(3'd5, 8'b0000_0000);// Load Immediate: LI R5, 0d(Bubble cycles)
+        LHI(3'd5, 8'b0000_0000);
         NOP;                    // No Operation: NOP
+        SUBI(3'd5, 3'd5, 5'd1); // Substrate Immediate: SUBI R5, R5, 1d
+        CMP(3'd5, 3'd0);        // Compare: CMP R5, R0
+        BNE(8'b1111_1101);      // Branch Not Equal: BNE -3d(Branch to bubble)
+
+        // Read prediction
+        DIC(3'd7);              // Read Acc prediction: DIC R7
         OUT(3'd7);              // Output: OUT R7
         HLT;                    // Halt: HLT
+
 		//start
 		#(clk_period) ex_iwe = 1'b0;
 		#(clk_period) ex_dwe = 1'b0;
