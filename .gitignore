@@ -1,6 +1,6 @@
 verilog/CPU/
 verilog/dot_product/
-verilog/InferenceFolder/
+InferenceFolder/
 *.rar
 *.zip
 *.pdf
