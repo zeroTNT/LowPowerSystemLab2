@@ -70,6 +70,7 @@ module Single_Cycle_CPU
     wire Jalr;                     // Jalr instruction
     wire Jr;
     wire OutR;
+    wire ACC;
 
     // Reg_File
     wire [ 3-1:0] rm_addr;         // Source register 1 index
@@ -110,8 +111,8 @@ module Single_Cycle_CPU
         else       PC <= PC_next; // Present PC value
     end
     // New for Model
-    assign Rm = rm_data;
-    assign Rn = rn_data;
+    assign Rm = ACC? rm_data: 16'd0;
+    assign Rn = ACC? rn_data: 16'd0;
 
     MUX_2to1 
     #(
@@ -191,7 +192,9 @@ module Single_Cycle_CPU
         .Jalr      (Jalr      ),
         .Jr        (Jr        ),
         .OutR      (OutR      ),
-        .Hlt       (Hlt       )
+        .Hlt       (Hlt       ),
+        // New for Acc
+        .ACC       (ACC   ),
     );
 
     // Register File

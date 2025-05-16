@@ -37,6 +37,7 @@ module CPUAcc #(
         .predict(predict),
         .Ra(Rm),
         .Rb(Rn),
+        .ACC(ACC)
 	);
 	
 	conv u_Acc(
