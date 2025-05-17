@@ -6,27 +6,29 @@ module conv3(A, B, sel, WA0, WA1, WA2, WA3, WB0, WB1, WB2, WB3, acc);
     input signed [7:0] WA0, WA1, WA2, WA3;
     input signed [7:0] WB0, WB1, WB2, WB3;
     output  reg signed [21:0] acc;
-    
+    reg signed [7:0] WA, WB ;
     reg signed [19:0] mulA, mulB;
     always@(*) begin
         case (sel)
             2'b00: begin
-                       mulA = A * WA0; 
-                       mulB = B * WB0;
+                       WA =  WA0; 
+                       WB =  WB0;
             end
             2'b01: begin
-                       mulA = A * WA1; 
-                       mulB = B * WB1;
+                       WA =  WA1; 
+                       WB =  WB1;
             end
             2'b10: begin
-                       mulA = A * WA2; 
-                       mulB = B * WB2;
+                       WA =  WA2; 
+                       WB =  WB2;
             end
             2'b11: begin
-                       mulA = A * WA3;
-                       mulB = B * WB3;
+                       WA =  WA3;
+                       WB =  WB3;
             end
         endcase
+        mulA = A * WA;
+        mulB = B * WB;
         acc = mulA + mulB;
     end
     

@@ -17,10 +17,11 @@ module CPUAcc #(
     input  [16-1:0] ex_ddata
 );
     // New for Dot Product
-    wire signed [16-1:0] predict;
+    wire signed [3:0] predict;
     wire signed [16-1:0] Rn;
     wire signed [16-1:0] Rm;
     wire                 rst = ~rst_n;
+    wire acc_done;
 
     Single_Cycle_CPU u_Single_Cycle_CPU(
 		.clk_i     (clk_i     ),
@@ -35,17 +36,18 @@ module CPUAcc #(
 		.ex_ddata  (ex_ddata  ),
         // New for Model
         .predict(predict),
-        .Ra(Rm),
-        .Rb(Rn),
-        .ACC(ACC)
+        .acc_done(acc_done),
+        .Rm(Rm),
+        .Rn(Rn)
 	);
 	
 	conv u_Acc(
-		.clk(clk_i),
+		.clk_i(clk_i),
 		.rst(rst),
 		.Rm(Rm),
 		.Rn(Rn),
-		.Answer(predict)
+		.max_index(predict),
+        .done(acc_done)
 	);
 
 

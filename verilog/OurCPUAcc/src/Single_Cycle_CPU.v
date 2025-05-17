@@ -19,6 +19,7 @@ module Single_Cycle_CPU
     ex_daddr,
     ex_ddata,
     // New for Model
+    acc_done,
     predict,
     Rm,
     Rn
@@ -38,6 +39,7 @@ module Single_Cycle_CPU
     input  [16-1:0] ex_daddr;
     input  [16-1:0] ex_ddata;
     // New for Model
+    input  acc_done;
     input  [3:0] predict;
     output [16-1:0] Rm;
     output [16-1:0] Rn;
@@ -80,7 +82,8 @@ module Single_Cycle_CPU
     wire [16-1:0] rn_data;         // Source register 2 data
     wire [16-1:0] rd_data;         // Destination register data
 
-    wire [ 3-1:0] rb_addr; 
+    wire [ 3-1:0] rb_addr;
+    wire [15:0] WB_predict; 
 
     // ALU
     wire [16-1:0] B;               // ALU source B value
@@ -113,6 +116,7 @@ module Single_Cycle_CPU
     // New for Model
     assign Rm = ACC? rm_data: 16'd0;
     assign Rn = ACC? rn_data: 16'd0;
+    assign WB_predict = acc_done? {{11{1'b0}}, predict}: 16'd0;
 
     MUX_2to1 
     #(
@@ -194,7 +198,7 @@ module Single_Cycle_CPU
         .OutR      (OutR      ),
         .Hlt       (Hlt       ),
         // New for Acc
-        .ACC       (ACC   ),
+        .ACC       (ACC   )
     );
 
     // Register File
@@ -255,7 +259,7 @@ module Single_Cycle_CPU
         .Sub    (Sub          ), // ALU Control signals
         .Cin_en (Cin_en       )
     );
-
+    
     // Write back source select
     MUX_8to1 u_MUX_8to1(
     	.s  (Mem_src                    ), // Write back data select
@@ -265,7 +269,7 @@ module Single_Cycle_CPU
         .i3 (ALU_result                 ), // ALU operation result
         .i4 (rm_data                    ), // rm
         .i5 (PC_plus                    ), // PC+1 value
-        .i6 ({{12{1'b0}}, predict}        ), // Model prediction
+        .i6 (WB_predict                 ), // Model prediction
         .i7 ({16{1'b0}}                 ),
         .o  (rd_data                    ) // Destination register write back data
     );

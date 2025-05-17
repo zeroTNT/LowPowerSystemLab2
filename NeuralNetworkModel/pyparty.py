@@ -51,18 +51,15 @@ def quant_conv(x_int8, w_int8, w_scale):
 
 def run_inference(x):
     x = quant_conv(x, W["c0"], W_SCALES["c0"]) # first conv
-    x = x.astype(np.int32)
     x = tf.nn.max_pool(x, ksize=3, strides=3, padding="VALID").numpy().astype(np.int8)
     x = quant_conv(x, W["c1"], W_SCALES["c1"]) # second conv
     x = quant_conv(x, W["c2"], W_SCALES["c2"]) # third conv
-    gap = tf.reduce_mean(x.astype(np.float32), axis=[1,2])
-    
+    #gap = tf.reduce_sum(x.astype(np.float32), axis=[1,2])
+    gap = tf.reduce_sum(x, axis=[1,2])
     return gap
 
 def data_preprocess(x):
-    if x.ndim == 3: # for single image inference
-        x = np.expand_dims(x, axis=0)
-    x = x[:,3:23,3:23].astype(np.float32)
+    x = x[:,3:23,3:23]
     x = np.where(x > 20, 1, 0)
     return x
 
@@ -79,7 +76,7 @@ if __name__ == "__main__":
     pred = np.argmax(logits, axis=1)
     acc = np.mean(pred == y_test)
     # 顯示比對結果與準確度
-    #for i in range(len(x_test)):
-    #    result = "✔️ 正確" if pred[i] == y_test[i] else "❌ 錯誤"
-    #    print(f"Index {i:4d}: Label = {y_test[i]} | Predict = {pred[i]} → {result}")
+    for i in range(len(x_test)):
+        result = "✔️ 正確" if pred[i] == y_test[i] else "❌ 錯誤"
+        print(f"Index {i:4d}: Label = {y_test[i]} | Predict = {pred[i]} → {result}")
     print(f"INT8 模型準確率: {acc*100:.2f}%")

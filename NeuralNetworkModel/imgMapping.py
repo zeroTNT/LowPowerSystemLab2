@@ -1,11 +1,7 @@
 from PIL import Image
 import numpy as np
-from pyparty import data_preprocess
-def ArrayMapping():
-    """
-    這個函數的具體實現可以根據需求進行修改。
-    """
-    pass
+from pyparty import data_preprocess, load_mnist_images, load_mnist_labels
+
 def ImgToInferece(imagepath):
     # 開啟圖片，並轉成灰階模式（"L"）
     image = Image.open(imagepath).convert("L")
@@ -14,83 +10,69 @@ def ImgToInferece(imagepath):
     image_array = image_array.reshape(1, 28, 28)  # 調整形狀為 (1, 28, 28)
     return image_array
 
+def conv2d_2input():
+    # Description:
+    # conv2d_2 input order is specified by the hardware.
+    # Output:
+    # inputorder: [input order(1,), [input coordinate(2,)]] 轉換前的座標陣列
+    inputorder = np.zeros((18*4, 2), dtype=int)
+    for i in range(4):
+        for j in range(6):
+            for k in range(3):
+                inputorder[i*18+j*3+k] = np.array([k+i, j])
+    return inputorder
 
-def maxpool3x3(outcoordinate):
-    # input:
-    # outcoordinate: (batch, row, col) 單一個轉換後的座標陣列
-    # output:
-    # incoordinate: (batch, row, col) 轉換前的座標陣列
-    
-    # 0,0 => 1,1
-    # 0,1 => 1,4
-    # 0,2 => 1,7
-    # 1,0 => 4,1
-    # 1,1 => 4,4
-    # 1,2 => 4,7
-    length = outcoordinate.shape[0]
-    centercoordinate = outcoordinate*3+1
-    incoordinate = np.zeros((length, 3, 3, 2), dtype=int)
-    for out in range(length):
-        singlecoordinate = np.zeros((3, 3, 2))
-        for i in range(3):
-            for j in range(3):
-                index = np.zeros((2), dtype=int)
-                index = centercoordinate[out][0]+i-1, centercoordinate[out][1]+j-1
-                singlecoordinate[i][j] = index
-        incoordinate[out] = singlecoordinate
-    return incoordinate
-def conv3x3(outcoordinate):
-    # input:
-    # outcoordinate: [elements, [coordinate(2,)]] 轉換後的座標陣列
-    # output:
-    # incoordinate: [elements, kernel row, kernel col, corresponding input coordinate) 轉換前的座標陣列
-    length = outcoordinate.shape[0]
-    centercoordinate = outcoordinate+1
-    incoordinate = np.zeros((length, 3, 3, 2), dtype=int)
-    for out in range(length):
-        singlecoordinate = np.zeros((3, 3, 2))
-        for i in range(3):
-            for j in range(3):
-                index = np.zeros((2), dtype=int)
-                index = centercoordinate[out][0]+i-1, centercoordinate[out][1]+j-1
-                singlecoordinate[i][j] = index
-        incoordinate[out] = singlecoordinate
-    return incoordinate
-def coordinate2index():
-    # output:
-    # conv2d1input: [cycle, hardware input position, [corresponding image coordinate]] 轉換前的座標陣列
+def maxpoolinginput(outcoordinate):
+    # Description:
+    # conv2d_1 output 9 pixels simultaneously.
+    # it's means maxpooling input 9 pixels simultaneously,
+    # the order in the 9 pixels is according to the conv2d_1 input.
+    # conv2d_1 input 9 bits parallel and corresponding to the postion of 9 output pixels.
+    # 
+    # Input:
+    # outcoordinate: [output order(1,), [output coordinate(2,)]] 轉換後的座標陣列
+    # Output:
+    # incoordinate: [input order(1,), [input coordinate(2,)]] 轉換前的座標陣列
+    inputorder = np.zeros((outcoordinate.shape[0]*9, 2), dtype=int)
+    for i in range(outcoordinate.shape[0]):
+        for j in range(3):
+            for k in range(3):
+                inputorder[i*9+j*3+k] = np.array([outcoordinate[i][0]*3+j, outcoordinate[i][1]*3+k])
+    # 0,0 => 0,0
+    # 0,1 => 0,3
+    # 0,2 => 0,6
+    # 1,0 => 3,0
+    # 2,0 => 6,0
+    # m,n => m*3,n*3
+    return inputorder
 
-    # conv2d_2 的 input 需要放入 24 次 3x1 的 input pixel
-    conv2d2input = np.zeros((24, 3, 2), dtype=int)
-    for i in range(24):
-        conv2d2input[i] = np.array([[(i//6), (i%6)], [(i//6)+1, (i%6)], [(i//6)+2, (i%6)]])
-    # 其中 3x1 的 pixel 會由上到下依序由前一層的 maxpooling 給予 共 24*3=72 個 pixel
-    # conv2d2input 相當於 maxpooling 後的 output pixel
-    
-    # 依conv2d_2 input 順序排列 maxpooling output 座標
-    maxpoolingoutput= np.reshape(conv2d2input, (24*3, 2))
-    # maxpoolingoutput[i] = conv2d2input[i//3][i%3]
-    # conv2d2input[i][j] = maxpoolingoutput[i*3+j]
+def conv2d_1input(outcoordinate):
+    # Description:
+    # conv2d_1 input 9 pixels simultaneously that cooresponding to output 9 pixels.
+    # 
+    # Input:
+    # outcoordinate: [output order(1,), [output coordinate(2,)]] 轉換後的座標陣列
+    # Output:
+    # incoordinate: [cycle(648,), input order(9,), [input coordinate(2,)]] 轉換前的座標陣列
+    inputorder = np.zeros((648, 9, 2), dtype=int) # manual setting
+    for maxpool_block in range(outcoordinate.shape[0]//9):
+        block = outcoordinate[maxpool_block*9]
+        # 0,0 => 0,0
+        # 0,3 => 0,2
+        # 0,6 => 0,4
+        # 0,9 => 0,6
+        # 3,0 => 2,0
+        # 6,0 => 4,0
+        # m,n => m//3*2,n//3*2
+        start_row = block[0]//3*2
+        start_col = block[1]//3*2
+        for conv_row in range(3):
+            for conv_col in range(3):
+                for i in range(3):
+                    for j in range(3):
+                        inputorder[maxpool_block*9+conv_row*3+conv_col][i*3+j] = np.array([start_row+conv_row+i, start_col+conv_col+j])
+    return inputorder
 
-    # 依照 maxpooling output pixel 回推所需要的 conv2d_1 output pixel
-    maxpoolinginput = maxpool3x3(maxpoolingoutput)
-
-    # 依 maxpooling output 順序排列 maxpooling input 座標
-    conv2d1output = np.reshape(maxpoolinginput, (72, 3*3, 2))
-    conv2d1output = np.reshape(maxpoolinginput, (72*9, 2))
-    # maxpoolinginput[i][j][k] = conv2d1output[i*9+j*3+k]
-    # conv2d1output[i] = maxpoolinginput[i//9][(i%9)//3][i%3]
-
-    # 依照 conv2d_1 output pixel 回推所需要的 conv2d_1 input pixel
-    conv2d1input = conv3x3(conv2d1output)
-
-    # 依 conv2d_1 output 順序排列 conv2d_1 input 座標
-    conv2d1input = np.reshape(conv2d1input, (648, 3*3, 2))
-    # 由於 conv2d_1 的運算方式會同時輸入 9 個 inptu pixel，會同時輸出 3*3=9 個 output pixel
-    # 且 conv2d_1 的 input pixel 在這 9 個 output pixel 的內部座標是相同的
-    
-    # 不知怎地，很剛好不用按照 conv2d_1 input 的方式重新 reshape ，就能得到 conv2d1input input 的順序
-    return conv2d1input
 def Mapping(ImageArray, conv2d1input):
     # input:
     # ImageArray: 2維陣列，代表一張圖片的灰階
@@ -124,10 +106,23 @@ if __name__ == "__main__":
     # 轉換圖片為陣列
     imagepath = "./imgMapping/test1.jpg"
     imgarray = ImgToInferece(imagepath)
+
+    # from MNIST dataset
+    imgarray = load_mnist_images("t10k-images.idx3-ubyte")
+    y_test = load_mnist_labels("t10k-labels.idx1-ubyte")
+    print(y_test[9999])
+    # data preprocess
+    imgarray = np.array(imgarray[9999])
+    imgarray = np.transpose(imgarray, (2, 0, 1))
     imgarray = data_preprocess(imgarray)
     
-    map_coordinate = coordinate2index()
+    # Generate the mapping coordinate
+    map_coordinate = conv2d_2input()
+    map_coordinate = maxpoolinginput(map_coordinate)
+    map_coordinate = conv2d_1input(map_coordinate)
     mappeddata = Mapping(imgarray[0], map_coordinate)
 
     # 將 mappeddata 包裝成 9-bit 整數
     write_Activation_txt(mappeddata, folderpath='./imgMapping', filename='Activation.txt')
+    
+    

@@ -112,7 +112,7 @@ module CPUAcc_tb();
         input [2:0] Rm;
         input [4:0] Imm;
         begin
-            write_imem(global_iaddr, {5'b00011, Rd, Rs, Imm});
+            write_imem(global_iaddr, {5'b00011, Rd, Rm, Imm});
             global_iaddr = global_iaddr + 1;
         end
     endtask
@@ -121,51 +121,51 @@ module CPUAcc_tb();
         input [2:0] Rm;
         input [4:0] Imm;
         begin
-            write_imem(global_iaddr, {5'b00101, Rd, Rs, Imm});
+            write_imem(global_iaddr, {5'b00101, Rd, Rm, Imm});
             global_iaddr = global_iaddr + 1;
         end
     endtask
-    task ADD; // Add: ADD Rd, Rm, Rs
+    task ADD; // Add: ADD Rd, Rm, Rn
         input [2:0] Rd;
         input [2:0] Rm;
-        input [2:0] Rs;
+        input [2:0] Rn;
         begin
             write_imem(global_iaddr, {5'b00000, Rd, Rm, Rn, 2'b00});
             global_iaddr = global_iaddr + 1;
         end
     endtask
-    task ADC; // Add with Carry: ADC Rd, Rm, Rs
+    task ADC; // Add with Carry: ADC Rd, Rm, Rn
         input [2:0] Rd;
         input [2:0] Rm;
-        input [2:0] Rs;
+        input [2:0] Rn;
         begin
             write_imem(global_iaddr, {5'b00000, Rd, Rm, Rn, 2'b01});
             global_iaddr = global_iaddr + 1;
         end
     endtask
-    task SBB; // Subtract with Borrow: SBB Rd, Rm, Rs
+    task SBB; // Subtract with Borrow: SBB Rd, Rm, Rn
         input [2:0] Rd;
         input [2:0] Rm;
-        input [2:0] Rs;
+        input [2:0] Rn;
         begin
             write_imem(global_iaddr, {5'b00000, Rd, Rm, Rn, 2'b10});
             global_iaddr = global_iaddr + 1;
         end
     endtask
-    task SUB; // Subtract: SUB Rd, Rm, Rs
+    task SUB; // Subtract: SUB Rd, Rm, Rn
         input [2:0] Rd;
         input [2:0] Rm;
-        input [2:0] Rs;
+        input [2:0] Rn;
         begin
             write_imem(global_iaddr, {5'b00000, Rd, Rm, Rn, 2'b11});
             global_iaddr = global_iaddr + 1;
         end
     endtask
-    task CMP; // Compare: CMP Rm, Rs
+    task CMP; // Compare: CMP Rm, Rn
         input [2:0] Rm;
         input [2:0] Rn;
         begin
-            write_imem(global_iaddr, {5'b00110, 3'bxxx, Rm, Rn, 2'b01});
+            write_imem(global_iaddr, {5'b00110, 3'b0, Rm, Rn, 2'b01});
             global_iaddr = global_iaddr + 1;
         end
     endtask
@@ -191,7 +191,7 @@ module CPUAcc_tb();
         input [2:0] Rd;
         input [2:0] Rm;
         begin
-            write_imem(global_iaddr, {5'b01011, Rd, Rm, 5'bxxxxx});
+            write_imem(global_iaddr, {5'b01011, Rd, Rm, 5'b0});
             global_iaddr = global_iaddr + 1;
         end
     endtask
@@ -249,27 +249,27 @@ module CPUAcc_tb();
         input [2:0] Rd;
         input [2:0] Rm;
         begin
-            write_imem(global_iaddr, {5'b10010, Rd, Rm, 5'bxxxxx});
+            write_imem(global_iaddr, {5'b10010, Rd, Rm, 5'b0});
             global_iaddr = global_iaddr + 1;
         end
     endtask
     task JR;  // Jump Register: JR Rm
         input [2:0] Rd;
         begin
-            write_imem(global_iaddr, {5'b10011, Rd, 8'bxxxxxxx});
+            write_imem(global_iaddr, {5'b10011, Rd, 8'b0});
             global_iaddr = global_iaddr + 1;
         end
     endtask
     task OUT; // Output: OUT Rd
         input [2:0] Rm;
         begin
-            write_imem(global_iaddr, {5'b11100, 3'bx, Rm, 3'bx, 2'b00});
+            write_imem(global_iaddr, {5'b11100, 3'b0, Rm, 3'b0, 2'b00});
             global_iaddr = global_iaddr + 1;
         end
     endtask
     task HLT; // Halt: HLT
         begin
-            write_imem(global_iaddr, {5'b11100, 9'bx, 2'b01});
+            write_imem(global_iaddr, {5'b11100, 9'b0, 2'b01});
             global_iaddr = global_iaddr + 1;
         end
     endtask
@@ -279,14 +279,14 @@ module CPUAcc_tb();
         input [2:0] Rm;
         input [2:0] Rn;
         begin
-            write_imem(global_iaddr, {5'b11111, 3'bxxx, Rm, Rn, 2'bxx});
+            write_imem(global_iaddr, {5'b11111, 3'b0, Rm, Rn, 2'b0});
             global_iaddr = global_iaddr + 1;
         end
     endtask
     task DIC; // Read Acc predition: DIC Rd (Rd: reg address)
         input [2:0] Rd;
         begin
-            write_imem(global_iaddr, {5'b11110, Rd, 6'bx, 2'bx});
+            write_imem(global_iaddr, {5'b11110, Rd, 6'b0, 2'b0});
             global_iaddr = global_iaddr + 1;
         end
     endtask
@@ -300,7 +300,7 @@ module CPUAcc_tb();
 	//----- Monitor -----//
 	//initial $monitor($realtime,"ns %h %h %h \n", clk_i, rst_n, Out_R, flag_done);
 	initial begin
-		#500000 $display($realtime,"ns, finish in breakout"); $finish;
+		#60000 $display($realtime,"ns, finish in breakout"); $finish;
 	end
 	
     //----- Testbench -----//
@@ -309,9 +309,9 @@ module CPUAcc_tb();
         global_iaddr = 16'h0000;
         global_daddr = 16'h0000;
         //----- Read Accelerator Instruction, Weight, Activation -----//
-        $readmemb("./AccResource/Weight.txt", Acc_Wmem);
+        $readmemh("./AccResource/Weight.txt", Acc_Wmem);
         $readmemb("./AccResource/Activation.txt", Acc_Amem);
-        $readmemb("./AccResource/Control.txt", Acc_Cmem);
+        $readmemh("./AccResource/Control.txt", Acc_Cmem);
         //----- Load CPU Data Memory -----//
         // DMEM[0:80] = W
         // DMEM[81:728] = A
@@ -329,76 +329,77 @@ module CPUAcc_tb();
 
         //----- Load CPU Instruction Memory -----//
         // R0: Zero register
-        // R1: Weight & Activation address
-        // R2: Control address
-        // R3: Accelerator Weight & Activation data
-        // R4: Accelerator Control data
+        // R1: Control address
+        // R2: Weight & Activation address
+        // R3: Accelerator Control
+        // R4: Accelerator Weight & Activation data
         // R5: Counter
+        // R6: Activation stall counter
         // R7: Output register
-        LLI(3'd1, 8'b1101_1001);// Load Immediate: LI R1, 729d(Control address)
+        LLI(3'd1, 8'b1101_1001);// Load Immediate: LI R1, 729d(Control address) #0
         LHI(3'd1, 8'b0000_0010);
         LLI(3'd2, 8'b0000_0000);// Load Immediate: LI R2, 0d(Weight address)
         LLI(3'd5, 8'b0101_0000);// Load Immediate: LI R5, 80d(Weight counter)
         
         // Load weight loop body
-        LDR(3'd3, 3'd1, 5'd0);  // Load Register: LDR R3, R1, 0d
+        LDR(3'd3, 3'd1, 5'd0);  // Load Register: LDR R3, R1, 0d                #4
         LDR(3'd4, 3'd2, 5'd0);  // Load Register: LDR R4, R2, 0d
-        MVM(3'd3, 3'd4);        // Move to Model: MW R3, R4
+        MVM(3'd4, 3'd3);        // Move to Model: MW R3, R4
         LDR(3'd3, 3'd1, 5'd1);  // Load Register: LDR R3, R1, 1d
         LDR(3'd4, 3'd2, 5'd1);  // Load Register: LDR R4, R2, 1d
-        MVM(3'd3, 3'd4);        // Move to Model: MW R3, R4
+        MVM(3'd4, 3'd3);        // Move to Model: MW R3, R4
         LDR(3'd3, 3'd1, 5'd2);  // Load Register: LDR R3, R1, 2d
         LDR(3'd4, 3'd2, 5'd2);  // Load Register: LDR R4, R2, 2d
-        MVM(3'd3, 3'd4);        // Move to Model: MW R3, R4
+        MVM(3'd4, 3'd3);        // Move to Model: MW R3, R4
         LDR(3'd3, 3'd1, 5'd3);  // Load Register: LDR R3, R1, 3d
         LDR(3'd4, 3'd2, 5'd3);  // Load Register: LDR R4, R2, 3d
-        MVM(3'd3, 3'd4);        // Move to Model: MW R3, R4
-        LDR(3'd3, 3'd1, 5'd4);  // Load Register: LDR R3, R1, 4d
+        MVM(3'd4, 3'd3);        // Move to Model: MW R3, R4
+        LDR(3'd3, 3'd1, 5'd4);  // Load Register: LDR R3, R1, 4d                #16
         LDR(3'd4, 3'd2, 5'd4);  // Load Register: LDR R4, R2, 4d
-        MVM(3'd3, 3'd4);        // Move to Model: MW R3, R4
+        MVM(3'd4, 3'd3);        // Move to Model: MW R3, R4
         LDR(3'd3, 3'd1, 5'd5);  // Load Register: LDR R3, R1, 5d
         LDR(3'd4, 3'd2, 5'd5);  // Load Register: LDR R4, R2, 5d
-        MVM(3'd3, 3'd4);        // Move to Model: MW R3, R4
+        MVM(3'd4, 3'd3);        // Move to Model: MW R3, R4
         LDR(3'd3, 3'd1, 5'd6);  // Load Register: LDR R3, R1, 6d
         LDR(3'd4, 3'd2, 5'd6);  // Load Register: LDR R4, R2, 6d
-        MVM(3'd3, 3'd4);        // Move to Model: MW R3, R4
+        MVM(3'd4, 3'd3);        // Move to Model: MW R3, R4                     #24
         LDR(3'd3, 3'd1, 5'd7);  // Load Register: LDR R3, R1, 7d
         LDR(3'd4, 3'd2, 5'd7);  // Load Register: LDR R4, R2, 7d
-        MVM(3'd3, 3'd4);        // Move to Model: MW R3, R4
+        MVM(3'd4, 3'd3);        // Move to Model: MW R3, R4
         LDR(3'd3, 3'd1, 5'd8);  // Load Register: LDR R3, R1, 8d
         LDR(3'd4, 3'd2, 5'd8);  // Load Register: LDR R4, R2, 8d
-        MVM(3'd3, 3'd4);        // Move to Model: MW R3, R4
+        MVM(3'd4, 3'd3);        // Move to Model: MW R3, R4
         LDR(3'd3, 3'd1, 5'd9);  // Load Register: LDR R3, R1, 9d
-        LDR(3'd4, 3'd2, 5'd9);  // Load Register: LDR R4, R2, 9d
-        MVM(3'd3, 3'd4);        // Move to Model: MW R3, R4
+        LDR(3'd4, 3'd2, 5'd9);  // Load Register: LDR R4, R2, 9d                #32
+        MVM(3'd4, 3'd3);        // Move to Model: MW R3, R4
         LDR(3'd3, 3'd1, 5'd10); // Load Register: LDR R3, R1, 10d
         LDR(3'd4, 3'd2, 5'd10); // Load Register: LDR R4, R2, 10d
-        MVM(3'd3, 3'd4);        // Move to Model: MW R3, R4
+        MVM(3'd4, 3'd3);        // Move to Model: MW R3, R4
         LDR(3'd3, 3'd1, 5'd11); // Load Register: LDR R3, R1, 11d
         LDR(3'd4, 3'd2, 5'd11); // Load Register: LDR R4, R2, 11d
-        MVM(3'd3, 3'd4);        // Move to Model: MW R3, R4
-        LDR(3'd3, 3'd1, 5'd12); // Load Register: LDR R3, R1, 12d
+        MVM(3'd4, 3'd3);        // Move to Model: MW R3, R4
+        LDR(3'd3, 3'd1, 5'd12); // Load Register: LDR R3, R1, 12d               #40
         LDR(3'd4, 3'd2, 5'd12); // Load Register: LDR R4, R2, 12d
-        MVM(3'd3, 3'd4);        // Move to Model: MW R3, R4
+        MVM(3'd4, 3'd3);        // Move to Model: MW R3, R4
         LDR(3'd3, 3'd1, 5'd13); // Load Register: LDR R3, R1, 13d
         LDR(3'd4, 3'd2, 5'd13); // Load Register: LDR R4, R2, 13d
-        MVM(3'd3, 3'd4);        // Move to Model: MW R3, R4
+        MVM(3'd4, 3'd3);        // Move to Model: MW R3, R4
         LDR(3'd3, 3'd1, 5'd14); // Load Register: LDR R3, R1, 14d
         LDR(3'd4, 3'd2, 5'd14); // Load Register: LDR R4, R2, 14d
-        MVM(3'd3, 3'd4);        // Move to Model: MW R3, R4
+        MVM(3'd4, 3'd3);        // Move to Model: MW R3, R4                     #48
         LDR(3'd3, 3'd1, 5'd15); // Load Register: LDR R3, R1, 15d
         LDR(3'd4, 3'd2, 5'd15); // Load Register: LDR R4, R2, 15d
-        MVM(3'd3, 3'd4);        // Move to Model: MW R3, R4
+        MVM(3'd4, 3'd3);        // Move to Model: MW R3, R4
 
-        ADDI(3'd1, 3'd1, 5'd16);// Add Immediate: ADDI R1, R1, 16d
+        ADDI(3'd1, 3'd1, 5'd16);// Add Immediate: ADDI R1, R1, 16d              #52
         ADDI(3'd2, 3'd2, 5'd16);// Add Immediate: ADDI R2, R2, 16d
         // Load weight loop condition
-        CMP(3'd5, 3'd1);        // Compare: CMP R5, R1
-        BNQ(8'b1100_1100);      // Branch NOT Equal: BNQ -52d(Branch to weight loop body)
+        CMP(3'd5, 3'd2);        // Compare: CMP R5, R2
+        BNE(8'b1100_1101);      // Branch NOT Equal: BNE -51d(Branch to weight loop body) #55
         // Load the final weight (80th weight)
         LDR(3'd3, 3'd1, 5'd0);  // Load Register: LDR R3, R1, 0d
         LDR(3'd4, 3'd2, 5'd0);  // Load Register: LDR R4, R2, 0d
-        MVM(3'd3, 3'd4);        // Move to Model: MW R3, R4
+        MVM(3'd4, 3'd3);        // Move to Model: MW R3, R4                     #58
 
         // Load activation loop condition
         LDR(3'd4, 3'd2, 5'd1);  // Load Register: LDR R4, R2, 1d(control data)
@@ -464,15 +465,9 @@ module CPUAcc_tb();
         MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
         
         // Bubble for prediction
-        LLI(3'd5, 8'b0000_0000);// Load Immediate: LI R5, 0d(Bubble cycles)
-        LHI(3'd5, 8'b0000_0000);
+        
+        LDR(3'd3, 3'd1, 5'd8);  // Load Register: LDR R3, R1, 8d
         NOP;                    // No Operation: NOP
-        SUBI(3'd5, 3'd5, 5'd1); // Substrate Immediate: SUBI R5, R5, 1d
-        CMP(3'd5, 3'd0);        // Compare: CMP R5, R0
-        BNE(8'b1111_1101);      // Branch Not Equal: BNE -3d(Branch to bubble)
-
-        // Read prediction
-        DIC(3'd7);              // Read Acc prediction: DIC R7
         OUT(3'd7);              // Output: OUT R7
         HLT;                    // Halt: HLT
 

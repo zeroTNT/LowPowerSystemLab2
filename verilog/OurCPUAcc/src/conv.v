@@ -1,4 +1,4 @@
-module conv(clk_i, rst, Rm, Rn, max_index,done); //conv1 module
+module conv(clk_i, rst, Rm, Rn, max_index, done); //conv1 module
     input  clk_i, rst;
     input [15:0] Rm, Rn;
     wire IN;
@@ -34,9 +34,9 @@ module conv(clk_i, rst, Rm, Rn, max_index,done); //conv1 module
     reg [3:0] cycle_count;
     reg [4:0] counter3_reg;
     reg WE3; //conv3 write enable
-    wire signed [24:0] conv3_out1, conv3_out2, conv3_out3, conv3_out4, conv3_out5, conv3_out6, conv3_out7, conv3_out8, conv3_out9, conv3_out10; //conv3 output
-    reg signed [17:0] conv3_shift1, conv3_shift2, conv3_shift3, conv3_shift4, conv3_shift5, conv3_shift6, conv3_shift7, conv3_shift8, conv3_shift9, conv3_shift10;
-    reg signed [17:0] max_val;
+    wire signed [27:0] conv3_out1, conv3_out2, conv3_out3, conv3_out4, conv3_out5, conv3_out6, conv3_out7, conv3_out8, conv3_out9, conv3_out10; //conv3 output
+    reg signed [20:0] conv3_shift1, conv3_shift2, conv3_shift3, conv3_shift4, conv3_shift5, conv3_shift6, conv3_shift7, conv3_shift8, conv3_shift9, conv3_shift10;
+    reg signed [20:0] max_val;
     reg [3:0] k;
     output reg [3:0] max_index;
     output reg done;
@@ -457,7 +457,6 @@ module conv(clk_i, rst, Rm, Rn, max_index,done); //conv1 module
             max_val <= 0;
             k <=0;
             max_index <= 0;
-            done <= 0;
        end else if (counter3 == 17) begin
          case (k)
             4'd0: begin
@@ -503,10 +502,11 @@ module conv(clk_i, rst, Rm, Rn, max_index,done); //conv1 module
          endcase
          if(k<9)
              k <= k +1;
-         if(k == 9) begin
-             done <= 1;
-         end
        end
-       
+       if(k == 9) begin
+            done <= 1;
+       end else begin
+            done <= 0;
+       end
     end
 endmodule

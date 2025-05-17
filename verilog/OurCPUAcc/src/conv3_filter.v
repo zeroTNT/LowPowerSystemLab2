@@ -3,7 +3,7 @@ module conv3_filter(CLK, CLR, WE, A1, B1, WA1, WB1, sel, out);
     input  [12:0] A1, B1;
     input [31:0] WA1,  WB1;
     input [1:0] sel;
-    output reg signed [24:0] out;
+    output reg signed [27:0] out;
     wire signed [21:0] acc;
 
    
