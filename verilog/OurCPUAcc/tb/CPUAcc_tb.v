@@ -402,73 +402,74 @@ module CPUAcc_tb();
         MVM(3'd4, 3'd3);        // Move to Model: MW R3, R4                     #58
 
         // Load activation loop condition
-        LDR(3'd4, 3'd2, 5'd1);  // Load Register: LDR R4, R2, 1d(control data)
+        LDR(3'd3, 3'd1, 5'd1);  // Load Register: LDR R3, R1, 1d(Control data)
         
         LLI(3'd5, 8'b1101_0001);// Load Immediate: LI R5, 721d(Activation counter)
         LHI(3'd5, 8'b0000_0010);
-        LLI(3'd1, 8'd81);       // Load Immediate: LI R1, 81d(Activation address)
+        LLI(3'd2, 8'd81);       // Load Immediate: LI R2, 81d(Activation address)
         
-        LDR(3'd3, 3'd1, 5'd0);  // Load Register: LDR R3, R1, 0d(Activation data)
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd1);  // Load Register: LDR R3, R1, 1d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd2);  // Load Register: LDR R3, R1, 2d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd3);  // Load Register: LDR R3, R1, 3d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd4);  // Load Register: LDR R3, R1, 4d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd5);  // Load Register: LDR R3, R1, 5d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd6);  // Load Register: LDR R3, R1, 6d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd7);  // Load Register: LDR R3, R1, 7d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd8);  // Load Register: LDR R3, R1, 8d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd9);  // Load Register: LDR R3, R1, 9d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd10); // Load Register: LDR R3, R1, 10d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd11); // Load Register: LDR R3, R1, 11d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd12); // Load Register: LDR R3, R1, 12d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd13); // Load Register: LDR R3, R1, 13d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd14); // Load Register: LDR R3, R1, 14d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd15); // Load Register: LDR R3, R1, 15d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd0);  // Load Register: LDR R3, R1, 0d(Activation data)
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd1);  // Load Register: LDR R3, R1, 1d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd2);  // Load Register: LDR R3, R1, 2d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd3);  // Load Register: LDR R3, R1, 3d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd4);  // Load Register: LDR R3, R1, 4d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd5);  // Load Register: LDR R3, R1, 5d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd6);  // Load Register: LDR R3, R1, 6d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd7);  // Load Register: LDR R3, R1, 7d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd8);  // Load Register: LDR R3, R1, 8d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd9);  // Load Register: LDR R3, R1, 9d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd10); // Load Register: LDR R3, R1, 10d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd11); // Load Register: LDR R3, R1, 11d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd12); // Load Register: LDR R3, R1, 12d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd13); // Load Register: LDR R3, R1, 13d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd14); // Load Register: LDR R3, R1, 14d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd15); // Load Register: LDR R3, R1, 15d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
 
-        ADDI(3'd1, 3'd1, 5'd16);// Add Immediate: ADDI R1, R1, 16d
+        ADDI(3'd2, 3'd2, 5'd16);// Add Immediate: ADDI R2, R2, 16d
         // Load weight loop condition
-        CMP(3'd5, 3'd1);        // Compare: CMP R5, R1
-        BNQ(8'b1101_1101);      // Branch NOT Equal: BNQ -35d(Branch to activation loop body)
+        CMP(3'd5, 3'd2);        // Compare: CMP R5, R2
+        BNE(8'b1101_1110);      // Branch NOT Equal: BNE -34d(Branch to activation loop body)
         
         // Load the final activation (721~728th activation)
-        LDR(3'd3, 3'd1, 5'd0);  // Load Register: LDR R3, R1, 0d(activation data)
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd1);  // Load Register: LDR R3, R1, 1d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd2);  // Load Register: LDR R3, R1, 2d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd3);  // Load Register: LDR R3, R1, 3d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd4);  // Load Register: LDR R3, R1, 4d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd5);  // Load Register: LDR R3, R1, 5d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd6);  // Load Register: LDR R3, R1, 6d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
-        LDR(3'd3, 3'd1, 5'd7);  // Load Register: LDR R3, R1, 7d
-        MVM(3'd3, 3'd4);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd0);  // Load Register: LDR R3, R1, 0d(activation data)
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd1);  // Load Register: LDR R3, R1, 1d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd2);  // Load Register: LDR R3, R1, 2d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd3);  // Load Register: LDR R3, R1, 3d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd4);  // Load Register: LDR R3, R1, 4d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd5);  // Load Register: LDR R3, R1, 5d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd6);  // Load Register: LDR R3, R1, 6d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
+        LDR(3'd4, 3'd2, 5'd7);  // Load Register: LDR R3, R1, 7d
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
         
         // Bubble for prediction
         
-        LDR(3'd3, 3'd1, 5'd8);  // Load Register: LDR R3, R1, 8d
-        NOP;                    // No Operation: NOP
+        MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
         OUT(3'd7);              // Output: OUT R7
+        BAL(8'b1111_1110);      // Branch Always: BAL -2d(Branch to HLT)
+
         HLT;                    // Halt: HLT
 
 		//start
