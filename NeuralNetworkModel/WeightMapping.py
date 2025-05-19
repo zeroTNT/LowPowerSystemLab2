@@ -24,7 +24,8 @@ def weight_flatten(weights_list: Dict[str, np.ndarray] = None
         if len(npy_list.shape) != 4:
             raise ValueError("weights must all be 4D array")
         # Convert the weights to specific shape [outC, inC, row, col]
-        weights = np.transpose(npy_list, (0, 3, 1, 2))
+        # weights = np.transpose(npy_list, (0, 3, 1, 2))
+        weights = np.transpose(npy_list, (3, 0, 1, 2))
         # weights.shape = (i0, i1, i2, i3)
         # weights.flatten() like following nested for loop:
         # for i0 in range(i0):
@@ -53,8 +54,8 @@ def pack_int8_to_16bit(array: np.ndarray,
 
     with open(f"{output_folder}/{filename}", 'w') as f:
         for i in range(0, len(array), 2):
-            high = int(array[i]) & 0xFF  # 保持 8-bit
-            low  = int(array[i+1]) & 0xFF
+            high = int(array[i+1]) & 0xFF  # 保持 8-bit
+            low  = int(array[i]) & 0xFF
             combined = (high << 8) | low
             f.write(f"{combined:04x}\n")
 
@@ -64,10 +65,17 @@ if __name__ == "__main__":
         "conv2d_0int.npy",
         "conv2d_1int.npy",
         "conv2d_2int.npy"]
-    npy_dict = load_weights(folder_path=folder_path, npy_list=npy_list)
-    npy = npy_dict["conv2d_0int.npy"]
-    # print(f"Loaded weights:\n {npy}")
+    npy_dict = load_weights(folder_path=folder_path, npy_list=npy_list) # [OutC, row, col, inC]
     weights = weight_flatten(npy_dict)
-    # print(f"Flattened weights:\n {weights}")
+
     pack_int8_to_16bit(weights, output_folder=folder_path, filename="Weight.txt")
+    print(f"Flattened weights [27:81] {weights[27:81]}")
+    
+    npy = npy_dict["conv2d_1int.npy"]
+    print(f"Original weights shape: {npy.shape}") 
+    npy = np.transpose(npy, (0, 3, 1, 2)) # [outC, inC, row, col]
+    print(f"Loaded weights:\n {npy}")
+
+    
+    
     

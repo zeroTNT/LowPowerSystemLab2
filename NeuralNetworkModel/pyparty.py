@@ -39,8 +39,8 @@ def quant_conv(x_int8, w_int8, w_scale):
         acc = tf.nn.conv2d(x, w, strides=1, padding="VALID")
     # per-channel scale
     acc = acc.numpy().astype(np.int32)
-    acc = acc >> 7
-    acc = acc << 7
+    # acc = acc >> 7
+    # acc = acc << 7
 
     for i in range(acc.shape[-1]):
         acc[...,i] = np.round(acc[...,i] >> w_scale[i])

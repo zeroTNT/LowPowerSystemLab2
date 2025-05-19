@@ -28,48 +28,24 @@ module conv2(A1, A2, ,A3 ,A4, A5, A6, A7, A8, A9,
     always @(*) begin
         case (sel)
             2'b00: begin
-                        mulcand1 = and_out1; 
-                        mulcand4 = and_out4;
-                        mulcand7 = and_out7;
-                        mulcand2 = and_out2;
-                        mulcand5 = and_out5;
-                        mulcand8 = and_out8;
-                        mulcand3 = and_out3;
-                        mulcand6 = and_out6;
-                        mulcand9 = and_out9;
+                        mulcand1 = and_out1;    mulcand2 = and_out4;    mulcand3 = and_out7;
+                        mulcand4 = and_out2;    mulcand5 = and_out5;    mulcand6 = and_out8;
+                        mulcand7 = and_out3;    mulcand8 = and_out6;    mulcand9 = and_out9;
             end
             2'b01: begin
-                        mulcand1 = and_out2;
-                        mulcand4 = and_out5;
-                        mulcand7 = and_out8;
-                        mulcand2 = and_out3;
-                        mulcand5 = and_out6;
-                        mulcand8 = and_out9;
-                        mulcand3 = and_out1;
-                        mulcand6 = and_out4;
-                        mulcand9 = and_out7;
+                        mulcand1 = and_out4;    mulcand2 = and_out7;    mulcand3 = and_out1;
+                        mulcand4 = and_out5;    mulcand5 = and_out8;    mulcand6 = and_out2;
+                        mulcand7 = and_out6;    mulcand8 = and_out9;    mulcand9 = and_out3;
             end
             2'b10: begin
-                        mulcand1 = and_out3;
-                        mulcand4 = and_out6;
-                        mulcand7 = and_out9;
-                        mulcand2 = and_out1;
-                        mulcand5 = and_out4;
-                        mulcand8 = and_out7;
-                        mulcand3 = and_out2;
-                        mulcand6 = and_out5;
-                        mulcand9 = and_out8;
+                        mulcand1 = and_out7;    mulcand2 = and_out1;    mulcand3 = and_out4;
+                        mulcand4 = and_out8;    mulcand5 = and_out2;    mulcand6 = and_out5;
+                        mulcand7 = and_out9;    mulcand8 = and_out3;    mulcand9 = and_out6;
             end
             2'b11: begin
-                        mulcand1 = and_out1; 
-                        mulcand2 = and_out4;
-                        mulcand3 = and_out7;
-                        mulcand4 = and_out2;
-                        mulcand5 = and_out5;
-                        mulcand6 = and_out8;
-                        mulcand7 = and_out3;
-                        mulcand8 = and_out6;
-                        mulcand9 = and_out9;
+                        mulcand1 = and_out1;    mulcand2 = and_out4;    mulcand3 = and_out7;
+                        mulcand4 = and_out2;    mulcand5 = and_out5;    mulcand6 = and_out8;
+                        mulcand7 = and_out3;    mulcand8 = and_out6;    mulcand9 = and_out9;
             end
         endcase
     end

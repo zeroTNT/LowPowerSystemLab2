@@ -58,19 +58,20 @@ def conv2d_1input(outcoordinate):
     for maxpool_block in range(outcoordinate.shape[0]//9):
         block = outcoordinate[maxpool_block*9]
         # 0,0 => 0,0
-        # 0,3 => 0,2
-        # 0,6 => 0,4
-        # 0,9 => 0,6
-        # 3,0 => 2,0
-        # 6,0 => 4,0
-        # m,n => m//3*2,n//3*2
-        start_row = block[0]//3*2
-        start_col = block[1]//3*2
+        # 0,3 => 0,3
+        # 0,6 => 0,6
+        # 0,9 => 0,9
+        # 3,0 => 3,0
+        # 6,0 => 6,0
+        # m,n => m,n
+        start_row = block[0]
+        start_col = block[1]
         for conv_row in range(3):
             for conv_col in range(3):
                 for i in range(3):
                     for j in range(3):
-                        inputorder[maxpool_block*9+conv_row*3+conv_col][i*3+j] = np.array([start_row+conv_row+i, start_col+conv_col+j])
+                        inputorder[maxpool_block*9+conv_row*3+conv_col][i*3+j] =\
+                        np.array([start_row+conv_row+i, start_col+conv_col+j])
     return inputorder
 
 def Mapping(ImageArray, conv2d1input):
@@ -110,19 +111,28 @@ if __name__ == "__main__":
     # from MNIST dataset
     imgarray = load_mnist_images("t10k-images.idx3-ubyte")
     y_test = load_mnist_labels("t10k-labels.idx1-ubyte")
-    print(y_test[9999])
+    print(y_test[9997])
     # data preprocess
-    imgarray = np.array(imgarray[9999])
+    imgarray = np.array(imgarray[9997])
     imgarray = np.transpose(imgarray, (2, 0, 1))
     imgarray = data_preprocess(imgarray)
-    
+    print(imgarray[0])
     # Generate the mapping coordinate
     map_coordinate = conv2d_2input()
+    wrong = map_coordinate[7]
+    # print("conv2d_2 input:")
+    # print(wrong)
+
     map_coordinate = maxpoolinginput(map_coordinate)
+    # print("maxpooling input:")
+    # print(map_coordinate[9*7:9*7+9])
+
     map_coordinate = conv2d_1input(map_coordinate)
+    print("conv2d_1 input:")
+    print(map_coordinate[9*7:9*7+9])
+
     mappeddata = Mapping(imgarray[0], map_coordinate)
 
     # 將 mappeddata 包裝成 9-bit 整數
     write_Activation_txt(mappeddata, folderpath='./imgMapping', filename='Activation.txt')
-    
     

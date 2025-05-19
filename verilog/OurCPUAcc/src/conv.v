@@ -23,7 +23,8 @@ module conv(clk_i, rst, Rm, Rn, max_index, done); //conv1 module
     wire conv2_and_control;
     wire signed [12:0] conv2_out1, conv2_out2; //conv2 output
     //assign image input
-    assign input_data = Rm[8:0]; 
+    //assign input_data = Rm[0:8]; 
+    assign {input_data[0], input_data[1], input_data[2], input_data[3], input_data[4], input_data[5], input_data[6], input_data[7], input_data[8]} = Rm[8:0]; //image input
     assign IN = Rn[0]; //input data valid
     assign Wen = Rn[7:1]; //weight enable
     //CONV3
@@ -131,7 +132,7 @@ module conv(clk_i, rst, Rm, Rn, max_index, done); //conv1 module
         if (cnt == 9) begin
             if (write_cnt == 9)
                 write_cnt <= 0;
-            else if(IN == 1)
+            else if (IN == 1)
                 write_cnt <= write_cnt + 1;
 
         // 狀態轉移：在觸發點時更新 group_cnt
