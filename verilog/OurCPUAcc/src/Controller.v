@@ -37,7 +37,8 @@ module Controller
     localparam OUT  = 5'b11100;
     //New for Acc
     localparam MVM  = 5'b11111;
-    localparam DIC  = 5'b11110; 
+    localparam DIC  = 5'b11110;
+    localparam HS   = 5'b11101;
 
     // I/O port declaration
     input  wire [16-1:0] instr; // Instruction opcode
@@ -84,7 +85,7 @@ module Controller
 
         //  11111 |     0    |    0    |    0     |    000   |    1   |  0  |   0  |  0 |    0    |    0    |  1  | MVM
         //  11110 |     1    |    0    |    0     |    110   |    0   |  0  |   0  |  0 |    0    |    0    |  0  | DIC
-        
+        //  11101 |     1    |    0    |    0     |    111   |    0   |  0  |   0  |  0 |    0    |    0    |  0  | HS(HandShake)
         ///////////////////////////////////////////////////////////////////////////
         // opcode | instr[9:8] | Z | C | PC_src |
         // -------+------------+---+---+--------+
@@ -347,6 +348,20 @@ module Controller
                 MemWrite  = 1'b0;
                 RD_src    = 1'b0;
                 Mem_src   = 3'b110; //choose the write back data from the Model
+                PC_src    = 1'b0;
+                Jmp       = 1'b0;
+                Jalr      = 1'b0;
+                Jr        = 1'b0;
+                OutR      = 1'b0;
+                Hlt       = 1'b0;
+            end
+            HS  :
+            begin
+                ALU_src   = 1'b0;
+                RegWrite  = 1'b1;
+                MemWrite  = 1'b0;
+                RD_src    = 1'b0;
+                Mem_src   = 3'b111; //choose the write back data from the Model
                 PC_src    = 1'b0;
                 Jmp       = 1'b0;
                 Jalr      = 1'b0;

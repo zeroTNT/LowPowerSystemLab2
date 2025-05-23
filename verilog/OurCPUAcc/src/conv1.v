@@ -1,9 +1,9 @@
-module conv1(CLK, CLR, WE ,A1, A2, A3, A4, A5, A6, A7, A8, A9, W1, W2, W3, W4, W5, W6, W7, W8, W9, acc_con, cmp, sel);
+module conv1(clk_i, rst, WE ,A1, A2, A3, A4, A5, A6, A7, A8, A9, W1, W2, W3, W4, W5, W6, W7, W8, W9, and_control, cmp, sel);
     input  A1,A2,A3,A4,A5,A6,A7,A8,A9;
     input signed [7:0] W1,W2,W3,W4,W5,W6,W7,W8,W9;
     input [3:0] sel;
-    input acc_con;
-    input CLK, CLR, WE;
+    input and_control;
+    input clk_i, rst, WE;
     output signed [5:0] cmp;
     reg signed [7:0] mul[8:0];
     wire signed [7:0] W[8:0];
@@ -38,8 +38,8 @@ end
     genvar j;
        generate
           for(j = 0; j < 9; j = j + 1) begin: genB
-            always @(posedge CLK) begin
-                if (CLR) begin
+            always @(posedge clk_i) begin
+                if (rst) begin
                     acc[j] <= 0;
                 end else if (!WE) begin
                     acc[j] <= acc[j] + mul[j];
@@ -50,7 +50,7 @@ end
     genvar k;
        generate
         for(k = 0; k < 9; k = k + 1) begin: genC
-            assign acc_out[k] = acc_con ? acc[k] >>> 6 : 6'd0;
+            assign acc_out[k] = and_control ? acc[k] >>> 6 : 6'd0;
         end 
        endgenerate
     //maxpooling

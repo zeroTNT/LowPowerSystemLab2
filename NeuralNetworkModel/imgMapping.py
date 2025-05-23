@@ -111,25 +111,15 @@ if __name__ == "__main__":
     # from MNIST dataset
     imgarray = load_mnist_images("t10k-images.idx3-ubyte")
     y_test = load_mnist_labels("t10k-labels.idx1-ubyte")
-    print(y_test[9997])
+    print(y_test[9993])
     # data preprocess
-    imgarray = np.array(imgarray[9997])
+    imgarray = np.array(imgarray[9993])
     imgarray = np.transpose(imgarray, (2, 0, 1))
     imgarray = data_preprocess(imgarray)
-    print(imgarray[0])
     # Generate the mapping coordinate
     map_coordinate = conv2d_2input()
-    wrong = map_coordinate[7]
-    # print("conv2d_2 input:")
-    # print(wrong)
-
     map_coordinate = maxpoolinginput(map_coordinate)
-    # print("maxpooling input:")
-    # print(map_coordinate[9*7:9*7+9])
-
     map_coordinate = conv2d_1input(map_coordinate)
-    print("conv2d_1 input:")
-    print(map_coordinate[9*7:9*7+9])
 
     mappeddata = Mapping(imgarray[0], map_coordinate)
 

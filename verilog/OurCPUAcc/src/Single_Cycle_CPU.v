@@ -116,7 +116,7 @@ module Single_Cycle_CPU
     // New for Model
     assign Rm = ACC? rm_data: 16'd0;
     assign Rn = ACC? rn_data: 16'd0;
-    assign WB_predict = acc_done? {{11{1'b0}}, predict}: 16'd0;
+    assign WB_predict = {{11{1'b0}}, predict};
 
     MUX_2to1 
     #(
@@ -270,7 +270,7 @@ module Single_Cycle_CPU
         .i4 (rm_data                    ), // rm
         .i5 (PC_plus                    ), // PC+1 value
         .i6 (WB_predict                 ), // Model prediction
-        .i7 ({16{1'b0}}                 ),
+        .i7 ({{15{1'b0}},     acc_done} ), // Handshake from Accelerator
         .o  (rd_data                    ) // Destination register write back data
     );
 

@@ -39,8 +39,6 @@ def quant_conv(x_int8, w_int8, w_scale):
         acc = tf.nn.conv2d(x, w, strides=1, padding="VALID")
     # per-channel scale
     acc = acc.numpy().astype(np.int32)
-    # acc = acc >> 7
-    # acc = acc << 7
 
     for i in range(acc.shape[-1]):
         acc[...,i] = np.round(acc[...,i] >> w_scale[i])
@@ -54,7 +52,6 @@ def run_inference(x):
     x = tf.nn.max_pool(x, ksize=3, strides=3, padding="VALID").numpy().astype(np.int8)
     x = quant_conv(x, W["c1"], W_SCALES["c1"]) # second conv
     x = quant_conv(x, W["c2"], W_SCALES["c2"]) # third conv
-    #gap = tf.reduce_sum(x.astype(np.float32), axis=[1,2])
     gap = tf.reduce_sum(x, axis=[1,2])
     return gap
 

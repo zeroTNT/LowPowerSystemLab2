@@ -290,6 +290,13 @@ module CPUAcc_tb();
             global_iaddr = global_iaddr + 1;
         end
     endtask
+    task HS;  // Read Acc status: HS Rd (Rd: reg address)
+        input [2:0] Rd;
+        begin
+            write_imem(global_iaddr, {5'b11101, Rd, 6'b0, 2'b0});
+            global_iaddr = global_iaddr + 1;
+        end
+    endtask
     task NOP; // No Operation: NOP
         begin
             write_imem(global_iaddr, {5'b11101, 11'b0});
@@ -300,7 +307,7 @@ module CPUAcc_tb();
 	//----- Monitor -----//
 	//initial $monitor($realtime,"ns %h %h %h \n", clk_i, rst_n, Out_R, flag_done);
 	initial begin
-		#60000 $display($realtime,"ns, finish in breakout"); $finish;
+		#65000 $display($realtime,"ns, finish in breakout"); $finish;
 	end
 	
     //----- Testbench -----//
@@ -334,7 +341,7 @@ module CPUAcc_tb();
         // R3: Accelerator Control
         // R4: Accelerator Weight & Activation data
         // R5: Counter
-        // R6: Activation stall counter
+        // R6: Handshake register
         // R7: Output register
         LLI(3'd1, 8'b1101_1001);// Load Immediate: LI R1, 729d(Control address) #0
         LHI(3'd1, 8'b0000_0010);
@@ -407,7 +414,7 @@ module CPUAcc_tb();
         LLI(3'd5, 8'b1101_0001);// Load Immediate: LI R5, 721d(Activation counter)
         LHI(3'd5, 8'b0000_0010);
         */
-        LLI(3'd5, 8'b1101_1000);// Load Immediate: LI R5, 728d(Activation counter)
+        LLI(3'd5, 8'b1101_1001);// Load Immediate: LI R5, 729d(Activation counter) d729 is the first address of control
         LHI(3'd5, 8'b0000_0010);
         LLI(3'd2, 8'd81);       // Load Immediate: LI R2, 81d(Activation address)
         
@@ -480,9 +487,11 @@ module CPUAcc_tb();
         // Bubble for prediction
         
         MVM(3'd4, 3'd3);        // Move to Model: MA R3, R4
-        OUT(3'd7);              // Output: OUT R7
-        BAL(8'b1111_1110);      // Branch Always: BAL -2d(Branch to HLT)
-
+        HS(3'd6);               // Read Acc status: HS R6
+        CMP(3'd6, 3'd0);        // Compare: CMP R6, R0
+        BEQ(8'b1111_1101);      // Branch Equal: BEQ -3d(Branch to prediction bubble)
+        DIC(3'd7);              // Read Acc predition: DIC R7
+        OUT(3'd7);              // Output: OUT R7                                               #89
         HLT;                    // Halt: HLT
 
 		//start
