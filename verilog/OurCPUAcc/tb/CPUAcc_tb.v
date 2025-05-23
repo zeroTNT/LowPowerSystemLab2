@@ -490,8 +490,8 @@ module CPUAcc_tb();
         HS(3'd6);               // Read Acc status: HS R6
         CMP(3'd6, 3'd0);        // Compare: CMP R6, R0
         BEQ(8'b1111_1101);      // Branch Equal: BEQ -3d(Branch to prediction bubble)
-        DIC(3'd7);              // Read Acc predition: DIC R7
-        OUT(3'd7);              // Output: OUT R7                                               #89
+		DIC(3'd7);              // Read Acc predition: DIC R7
+        OUT(3'd7);              // Output: OUT R7                                               #88
         HLT;                    // Halt: HLT
 
 		//start
